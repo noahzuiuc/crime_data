@@ -1,0 +1,6 @@
+openai
+dotenv
+re
+csv
+pathlib
+pypdf

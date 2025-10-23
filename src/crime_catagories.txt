@@ -1,0 +1,6 @@
+homicide
+robbery
+larceny
+aggravated-assault
+sexual-assault
+grand-theft-auto
