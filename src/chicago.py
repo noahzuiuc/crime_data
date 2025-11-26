@@ -116,7 +116,7 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
                 "content": [
                     {
                         "type": "text",
-                        "text": f"How many {category} crimes were committed in {year} according to the PDF? Please provide only the number."
+                        "text": f"How many {category} crimes were committed in {year} according to the PDF? Please provide only the number. You may include crimes that are synonyms i.e. homicide and murder or grand theft auto and motor vehicle theft. Larceny should be the sum of theft and robbery. Sexual assault may also be referred to as rape or criminal sexual assault"
                     },
                     {
                         "type": "file",
