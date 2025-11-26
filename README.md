@@ -17,3 +17,5 @@ Install the requirements (in the src directory)
 ```bash
 pip install -r requirements.txt
 ```
+
+Rename .env.example to .env and supply an openrouter API key
