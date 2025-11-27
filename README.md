@@ -1,4 +1,4 @@
-This project was developed python 3.12.7, compatibility with other version may vary. 
+This project was developed python 3.12.7, compatibility with other version may vary.  
 This project was built and tested using Windows 11, compatibility with other operating systems may vary.
 
 Create a virtual environment for the project (in the root directory)
