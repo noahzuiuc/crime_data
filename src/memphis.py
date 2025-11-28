@@ -22,8 +22,8 @@ photo_links = ["https://i.ibb.co/9Ht6dPkW/robbery.webp",
                "https://i.ibb.co/Zp301w42/sexual-assault.webp",
                "https://i.ibb.co/QSLqqW1/aggravated-assault.webp",
                "https://i.ibb.co/KjRwfd3M/burglary.webp",
-               "https://i.ibb.co/PGFrpGmm/grand-theft-auto.webp",
-               "https://i.ibb.co/G40d4K7p/homicide.webp",
+               "https://i.ibb.co/XkxDPSj8/motor-vehicle-theft.webp",
+               "https://i.ibb.co/bMSLDpkq/murder.webp",
                "https://i.ibb.co/JFgZf7w7/larceny.webp"]
 
 def _sanitize_response_text(text: str) -> str:

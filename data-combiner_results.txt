@@ -1,0 +1,75 @@
+Processing City: Washington, DC
+  - Querying AI for mapping 6 files...
+  + Mapped 1 files to 'homicide':
+      - homicide.csv
+  + Mapped 1 files to 'robbery':
+      - robbery.csv
+  + Mapped 1 files to 'larceny':
+      - larceny.csv
+  + Mapped 1 files to 'aggravated-assault':
+      - aggravated-assault.csv
+  + Mapped 1 files to 'sexual-assault':
+      - sexual-assault.csv
+  + Mapped 1 files to 'grand-theft-auto':
+      - grand-theft-auto.csv
+Processing City: Los Angeles, California
+  - Querying AI for mapping 30 files...
+  + Mapped 1 files to 'homicide':
+      - criminal-homicide.csv
+  + Mapped 1 files to 'robbery':
+      - robbery.csv
+  + Mapped 1 files to 'larceny':
+      - larceny-theft.csv
+  + Mapped 1 files to 'aggravated-assault':
+      - aggravated-assault.csv
+  + Mapped 3 files to 'sexual-assault':
+      - forcible-rape.csv
+      - sex-offenses-felonies.csv
+      - sex-offenses-misdemeanors.csv
+  + Mapped 1 files to 'grand-theft-auto':
+      - grand-theft-auto.csv
+Processing City: Chicago, Illinois
+  - Querying AI for mapping 6 files...
+  + Mapped 1 files to 'homicide':
+      - homicide.csv
+  + Mapped 1 files to 'robbery':
+      - robbery.csv
+  + Mapped 1 files to 'larceny':
+      - larceny.csv
+  + Mapped 1 files to 'aggravated-assault':
+      - aggravated-assault.csv
+  + Mapped 1 files to 'sexual-assault':
+      - sexual-assault.csv
+  + Mapped 1 files to 'grand-theft-auto':
+      - grand-theft-auto.csv
+Processing City: Portland, Oregon
+  - Querying AI for mapping 22 files...
+  + Mapped 1 files to 'homicide':
+      - homicide.csv
+  + Mapped 1 files to 'robbery':
+      - robbery.csv
+  + Mapped 4 files to 'larceny':
+      - larceny-car-prowl---other.csv
+      - larceny-car-prowl---car-parts.csv
+      - larceny-other.csv
+      - larceny-shoplifting.csv
+  + Mapped 1 files to 'aggravated-assault':
+      - assault-aggravated.csv
+  + Mapped 1 files to 'sexual-assault':
+      - sex-offenses.csv
+  + Mapped 1 files to 'grand-theft-auto':
+      - motor-vehicle-theft.csv
+Processing City: Memphis, Tennessee
+  - Querying AI for mapping 7 files...
+  + Mapped 1 files to 'homicide':
+      - murder.csv
+  + Mapped 1 files to 'robbery':
+      - robbery.csv
+  + Mapped 1 files to 'larceny':
+      - larceny.csv
+  + Mapped 1 files to 'aggravated-assault':
+      - aggravated-assault.csv
+  + Mapped 1 files to 'sexual-assault':
+      - sexual-assault.csv
+  + Mapped 1 files to 'grand-theft-auto':
+      - motor-vehicle-theft.csv

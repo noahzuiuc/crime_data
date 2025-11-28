@@ -20,13 +20,24 @@ city,year,count
 "Los Angeles, California",2022,8299
 "Los Angeles, California",2023,8023
 "Los Angeles, California",2024,7907
-"Chicago, Illinois",2017,35161
+"Chicago, Illinois",2017,6594
 "Chicago, Illinois",2018,6529
 "Chicago, Illinois",2019,6584
+"Chicago, Illinois",2020,6438
 "Chicago, Illinois",2021,7237
 "Chicago, Illinois",2022,7267
 "Chicago, Illinois",2023,7707
 "Chicago, Illinois",2024,7900
+"Portland, Oregon",2015,1167
+"Portland, Oregon",2016,1566
+"Portland, Oregon",2017,1664
+"Portland, Oregon",2018,1745
+"Portland, Oregon",2019,1987
+"Portland, Oregon",2020,2341
+"Portland, Oregon",2021,3065
+"Portland, Oregon",2022,2787
+"Portland, Oregon",2023,2576
+"Portland, Oregon",2024,2593
 "Memphis, Tennessee",2014,3330
 "Memphis, Tennessee",2015,3198
 "Memphis, Tennessee",2016,3487

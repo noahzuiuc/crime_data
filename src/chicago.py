@@ -22,9 +22,9 @@ client = OpenAI(
 
 
 def load_crime_categories() -> list:
-    """Load crime categories from crime_catagories.txt file."""
+    """Load crime categories from crime_categories.txt file."""
     script_dir = Path(__file__).parent
-    categories_file = script_dir / "crime_catagories.txt"
+    categories_file = script_dir / "crime_categories.txt"
     
     with open(categories_file, "r", encoding="utf-8") as f:
         categories = [line.strip() for line in f if line.strip()]
