@@ -51,36 +51,44 @@ THE SOLUTION WAS TO ONLY INCLUDE PAGES WITH THE STRING "INDEX CRIME OVERVIEW"
 
 human data:
 modifications in pre-process:
-special instructions given for chicago (rape was changed to criminal sexual assault a few years in):
-You may include crimes that are synonyms i.e. homicide and murder or grand theft auto and motor vehicle theft. Larceny should be the sum of theft and robbery. Sexual assault may also be referred to as rape or criminal sexual assault. Also the model was given the crime_categories.txt and asked to use that as a guide.
+special instructions given for chicago:
+You may include crimes that are synonyms i.e.
+homicide may be called criminal homicide (murder) or murder.
+larceny may be called theft or larceny theft.
+grand theft auto may be called motor vehicle theft.
+sexual assault may be called rape or criminal sexual assault (rape) or criminal sexual assault.
+
+homicide:
+chicago: criminal-homicide-murder (2017-2020), murder (2021)
+
+larceny:
+chicago: theft (2017-2020, 2022-2024), larceny-theft (2021)
+
+sexual-assault:
+chicago: rape (2017-2019), criminal-sexual-assault-rape (2020), criminal-sexual-assault (2020-2024)
+
+grand-theft-auto:
+chicago: motor-vehicle-theft
 
 modifications in post-process:
 homicide:
 los angeles: criminal-homicide
-portland: murder-and-non-negligent-manslaughter
 memphis: murder
 
 robbery:
 worked for all cities
 
 larceny:
-chicago: I USED A COMBINATION OF THEFT AND ROBBERY BUT THIS IS PROBABLY WRONG (SHOULD JUST BE THEFT?)
 los angeles: larceny-theft
-portland: theft-from-a-motor-vehicle, purse-snatching, theft-from-building,theft-of-motor-vehicle-parts-or-accessories, theft-from-a-coin-operated-machine-or-device, stolen-property-offenses, pocket-picking, all-other-larceny, (robbery, identity-theft, false-pretenses-swindle-confidence-game?)
+portland: larceny-car-prowl--car-parts, larceny-car-prowl--other, larceny-shoplifting, and larceny-other combined
 
 aggravated-assault:
-portland: assault-offences (I CAN FIX THIS BY CHANGING THE SCRIPT, and its called "Assault: Aggravated") - then move this to preprocess
+portland: sex-offenses (may include things that are not sexual-assault)
 
 sexual-assault:
-los angeles: forcible-rape and sex-offenses-felonies combined (what about sex offense misdemeanors?)
-portland: rape and sexual-assault-with-an-object (fondling?), statutory-rape
+los angeles: forcible-rape (what about sex-offenses-felonies and sex offense misdemeanors?)
+portland: sex-offenses (rape, sexual-assault-with-an-object, fondling, statutory-rape, sodomy)
 
 grand-theft-auto:
 portland: motor-vehicle-theft
 memphis: motor-vehicle-theft
-
-
-
-
-
-aggravated assault for chicago is way off for 2017

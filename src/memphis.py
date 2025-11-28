@@ -115,7 +115,7 @@ def _write_csv_from_text(csv_path: Path, text: str) -> None:
 
 for photo_link in photo_links:
     completion = client.chat.completions.create(
-        model="google/gemini-2.5-pro",
+        model="google/gemini-3-pro-preview",
         messages=[
             {
                 "role": "user",

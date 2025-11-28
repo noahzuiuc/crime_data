@@ -23,12 +23,10 @@ def load_portland_crime_data():
     
     # Read all CSV files in the input folder
     for csv_file in sorted(input_folder.glob("*.csv")):
-        # Extract year from filename (e.g., "New_Offense_Data_2015.csv" -> "2015")
-        # Assumes format ends in _YYYY
         try:
             year = csv_file.stem.split("_")[-1]
             
-            # Read CSV into DataFrame with error handling for malformed lines
+            # Read CSV into DataFrame
             df = pd.read_csv(csv_file, on_bad_lines='warn', engine='python')
             
             # Store in dictionary
@@ -43,7 +41,7 @@ def load_portland_crime_data():
 
 def create_category_csvs(crime_data):
     """
-    Create CSV files for each crime type (OffenseType) with year and count columns.
+    Create CSV files for each CustomCrimeCategory with year and count columns.
     """
     if not crime_data:
         print("No data available to process.")
@@ -51,61 +49,77 @@ def create_category_csvs(crime_data):
 
     script_dir = Path(__file__).parent
     output_folder = script_dir.parent / "Portland, Oregon" / "output"
-    
-    # Create output folder if it doesn't exist
     output_folder.mkdir(parents=True, exist_ok=True)
     
-    # Combine all years into one DataFrame with year column
+    # Combine all years into one DataFrame
     all_data = []
     for year, df in crime_data.items():
         df_copy = df.copy()
-        # Create a temporary uppercase YEAR column for grouping
         df_copy['YEAR'] = int(year)
         all_data.append(df_copy)
     
     combined_df = pd.concat(all_data, ignore_index=True)
     
-    # --- CHANGED: Check for 'OffenseType' instead of 'OffenseCategory' ---
-    target_column = 'OffenseType'
+    # --- STEP 1: DEFINE TARGET COLUMN ---
+    target_column = 'CustomCrimeCategory'
     
+    # --- STEP 2: CREATE MAPPING LOGIC ---
+    # If the column doesn't exist in source data, we must create it from OffenseType
     if target_column not in combined_df.columns:
-        print(f"Error: '{target_column}' column not found in data.")
-        return
+        if 'OffenseType' in combined_df.columns:
+            print(f"Generating '{target_column}' from 'OffenseType'...")
+            
+            # ---------------------------------------------------------
+            # TODO: EDIT THIS DICTIONARY TO DEFINE YOUR CUSTOM GROUPS
+            # ---------------------------------------------------------
+            mapping = {
+                # Example Mappings:
+                'Motor Vehicle Theft': 'Vehicle Crime',
+                'Theft From Motor Vehicle': 'Vehicle Crime',
+                'Burglary': 'Property Crime',
+                'Vandalism': 'Property Crime',
+                'Aggravated Assault': 'Violent Crime',
+                # Add your specific mappings here
+            }
+            
+            # Function to apply mapping
+            def map_category(offense):
+                # Return the mapped value, or the original name if not found in dict
+                return mapping.get(offense, offense)
 
-    # Get all unique types
+            # Create the new column
+            combined_df[target_column] = combined_df['OffenseType'].apply(map_category)
+        else:
+            print(f"Error: Could not generate {target_column} because 'OffenseType' is missing.")
+            return
+
+    # Get all unique types from the NEW column
     categories = combined_df[target_column].unique()
-    categories = [cat for cat in categories if pd.notna(cat)]  # Remove NaN values
+    categories = [cat for cat in categories if pd.notna(cat)]
     
-    print(f"\nFound {len(categories)} unique offense types")
-    print(f"Processing types...")
+    print(f"\nFound {len(categories)} unique custom categories")
+    print(f"Processing categories...")
     
-    # For each type, create a CSV with year and count
+    # For each category, create a CSV with year and count
     for category in sorted(categories):
-        # Filter data for this specific OffenseType
+        # Filter data for this specific CustomCrimeCategory
         category_data = combined_df[combined_df[target_column] == category]
         
         # Group by YEAR and count
         yearly_counts = category_data.groupby('YEAR').size().reset_index(name='count')
-        
-        # Sort by YEAR
         yearly_counts = yearly_counts.sort_values('YEAR')
-        
-        # Rename 'YEAR' to lowercase 'year'
         yearly_counts = yearly_counts.rename(columns={'YEAR': 'year'})
         
-        # Create filename (sanitize name for filesystem)
+        # Create filename
         safe_filename = category.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')
-        # Remove any remaining characters that aren't alphanumeric, hyphens, or underscores
         safe_filename = ''.join(c for c in safe_filename if c.isalnum() or c in ['-', '_'])
         
         output_path = output_folder / f"{safe_filename}.csv"
         
-        # Save to CSV
         yearly_counts.to_csv(output_path, index=False)
-        
         print(f"  Created: {safe_filename}.csv ({len(yearly_counts)} years)")
     
-    print(f"\nAll offense type CSV files saved to: {output_folder}")
+    print(f"\nAll category CSV files saved to: {output_folder}")
 
 
 if __name__ == "__main__":
@@ -115,7 +129,5 @@ if __name__ == "__main__":
     # Print summary
     print(f"\nTotal years loaded: {len(data)}")
     if data:
-        print(f"Years: {list(data.keys())}")
-        
-        # Create CSV files using OffenseType
+        # Create CSV files using CustomCrimeCategory
         create_category_csvs(data)

@@ -109,14 +109,18 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
     data_url = f"data:application/pdf;base64,{pdf_base64}"
     
     completion = client.chat.completions.create(
-        model="google/gemini-2.5-flash-lite",
+        model="google/gemini-3-pro-preview",
         messages=[
             {
                 "role": "user",
                 "content": [
                     {
                         "type": "text",
-                        "text": f"How many {category} crimes were committed in {year} according to the PDF? Please provide only the number. You may include crimes that are synonyms i.e. homicide and murder or grand theft auto and motor vehicle theft. Larceny should be the sum of theft and robbery. Sexual assault may also be referred to as rape or criminal sexual assault"
+                        "text": f"""How many {category} crimes were committed in {year} according to the PDF? Please provide only the number. You may include crimes that are synonyms i.e.\
+                        homicide may be called criminal homicide (murder) or murder.\
+                        larceny may be called theft or larceny theft.\
+                        grand theft auto may be called motor vehicle theft.\
+                        sexual assault may be called rape or criminal sexual assault (rape) or criminal sexual assault."""
                     },
                     {
                         "type": "file",
@@ -182,8 +186,8 @@ if __name__ == "__main__":
         print(f"\nProcessing {pdf_path.name} (Year: {year})...")
         
         try:
-            page_nums = find_page_with_text(pdf_path, "Index Crime Overview")
-            print(f"  Found 'Index Crime Overview' on pages {[p + 1 for p in page_nums]}")
+            page_nums = find_page_with_text(pdf_path, "Index Crime")
+            print(f"  Found 'Index Crime' on pages {[p + 1 for p in page_nums]}")
         except ValueError as e:
             print(f"  Error: {e}")
             continue
