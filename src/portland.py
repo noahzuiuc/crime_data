@@ -43,10 +43,7 @@ def load_portland_crime_data():
 
 def create_category_csvs(crime_data):
     """
-    Create CSV files for each crime category with year and count columns.
-    
-    Args:
-        crime_data: Dictionary with year as key and DataFrame as value
+    Create CSV files for each crime type (OffenseType) with year and count columns.
     """
     if not crime_data:
         print("No data available to process.")
@@ -68,21 +65,24 @@ def create_category_csvs(crime_data):
     
     combined_df = pd.concat(all_data, ignore_index=True)
     
-    # Get all unique categories (using Portland's specific column name)
-    if 'OffenseCategory' not in combined_df.columns:
-        print("Error: 'OffenseCategory' column not found in data.")
+    # --- CHANGED: Check for 'OffenseType' instead of 'OffenseCategory' ---
+    target_column = 'OffenseType'
+    
+    if target_column not in combined_df.columns:
+        print(f"Error: '{target_column}' column not found in data.")
         return
 
-    categories = combined_df['OffenseCategory'].unique()
-    categories = [cat for cat in categories if pd.notna(cat)]  # Remove NaN categories
+    # Get all unique types
+    categories = combined_df[target_column].unique()
+    categories = [cat for cat in categories if pd.notna(cat)]  # Remove NaN values
     
-    print(f"\nFound {len(categories)} unique categories")
-    print(f"Processing categories...")
+    print(f"\nFound {len(categories)} unique offense types")
+    print(f"Processing types...")
     
-    # For each category, create a CSV with year and count
+    # For each type, create a CSV with year and count
     for category in sorted(categories):
-        # Filter data for this category
-        category_data = combined_df[combined_df['OffenseCategory'] == category]
+        # Filter data for this specific OffenseType
+        category_data = combined_df[combined_df[target_column] == category]
         
         # Group by YEAR and count
         yearly_counts = category_data.groupby('YEAR').size().reset_index(name='count')
@@ -90,12 +90,14 @@ def create_category_csvs(crime_data):
         # Sort by YEAR
         yearly_counts = yearly_counts.sort_values('YEAR')
         
-        # --- CRITICAL STEP: Rename 'YEAR' to lowercase 'year' ---
+        # Rename 'YEAR' to lowercase 'year'
         yearly_counts = yearly_counts.rename(columns={'YEAR': 'year'})
         
-        # Create filename (sanitize category name for filesystem)
+        # Create filename (sanitize name for filesystem)
         safe_filename = category.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')
+        # Remove any remaining characters that aren't alphanumeric, hyphens, or underscores
         safe_filename = ''.join(c for c in safe_filename if c.isalnum() or c in ['-', '_'])
+        
         output_path = output_folder / f"{safe_filename}.csv"
         
         # Save to CSV
@@ -103,7 +105,7 @@ def create_category_csvs(crime_data):
         
         print(f"  Created: {safe_filename}.csv ({len(yearly_counts)} years)")
     
-    print(f"\nAll category CSV files saved to: {output_folder}")
+    print(f"\nAll offense type CSV files saved to: {output_folder}")
 
 
 if __name__ == "__main__":
@@ -115,5 +117,5 @@ if __name__ == "__main__":
     if data:
         print(f"Years: {list(data.keys())}")
         
-        # Create CSV files for each category
+        # Create CSV files using OffenseType
         create_category_csvs(data)

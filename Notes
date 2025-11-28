@@ -45,6 +45,8 @@ CHICAGO PDFS ARE TOO BIG????
 --remove images and compress the pdf
 --also remove pages that don't contain the string of the crime category we are looking for (but doesn't work for crime categories where chicagos terminology is different)
 
+THE SOLUTION WAS TO ONLY INCLUDE PAGES WITH THE STRING "INDEX CRIME OVERVIEW"
+
 
 
 human data:
@@ -55,23 +57,23 @@ You may include crimes that are synonyms i.e. homicide and murder or grand theft
 modifications in post-process:
 homicide:
 los angeles: criminal-homicide
-portland: homicide-offences
+portland: murder-and-non-negligent-manslaughter
 memphis: murder
 
 robbery:
 worked for all cities
 
 larceny:
-chicago: I USED A COMBINATION OF THEFT AND ROBBERY BUT THIS PROBABLY WRONG (SHOULD JUST BE THEFT?)
+chicago: I USED A COMBINATION OF THEFT AND ROBBERY BUT THIS IS PROBABLY WRONG (SHOULD JUST BE THEFT?)
 los angeles: larceny-theft
-portland: larceny-offenses
+portland: theft-from-a-motor-vehicle, purse-snatching, theft-from-building,theft-of-motor-vehicle-parts-or-accessories, theft-from-a-coin-operated-machine-or-device, stolen-property-offenses, pocket-picking, all-other-larceny, (robbery, identity-theft, false-pretenses-swindle-confidence-game?)
 
 aggravated-assault:
-portland: assault-offences
+portland: assault-offences (I CAN FIX THIS BY CHANGING THE SCRIPT, and its called "Assault: Aggravated") - then move this to preprocess
 
 sexual-assault:
 los angeles: forcible-rape and sex-offenses-felonies combined (what about sex offense misdemeanors?)
-portland: sex-offenses
+portland: rape and sexual-assault-with-an-object (fondling?), statutory-rape
 
 grand-theft-auto:
 portland: motor-vehicle-theft
