@@ -1,0 +1,50 @@
+city,year,count
+"Washington, DC",2014,105
+"Washington, DC",2015,162
+"Washington, DC",2016,135
+"Washington, DC",2017,116
+"Washington, DC",2018,160
+"Washington, DC",2019,166
+"Washington, DC",2020,198
+"Washington, DC",2021,226
+"Washington, DC",2022,203
+"Washington, DC",2023,274
+"Chicago, Illinois",2017,653
+"Chicago, Illinois",2018,565
+"Chicago, Illinois",2019,492
+"Chicago, Illinois",2021,800
+"Chicago, Illinois",2022,699
+"Chicago, Illinois",2023,618
+"Chicago, Illinois",2024,580
+"Memphis, Tennessee",2014,90
+"Memphis, Tennessee",2015,80
+"Memphis, Tennessee",2016,127
+"Memphis, Tennessee",2017,120
+"Memphis, Tennessee",2018,103
+"Memphis, Tennessee",2019,117
+"Memphis, Tennessee",2020,185
+"Memphis, Tennessee",2021,176
+"Memphis, Tennessee",2022,163
+"Memphis, Tennessee",2023,225
+"Memphis, Tennessee",2024,181
+"Los Angeles, California",2014,137
+"Los Angeles, California",2015,178
+"Los Angeles, California",2016,189
+"Los Angeles, California",2017,158
+"Los Angeles, California",2018,168
+"Los Angeles, California",2019,120
+"Los Angeles, California",2020,174
+"Los Angeles, California",2021,240
+"Los Angeles, California",2022,182
+"Los Angeles, California",2023,171
+"Los Angeles, California",2024,168
+"Portland, Oregon",2015,26
+"Portland, Oregon",2016,16
+"Portland, Oregon",2017,24
+"Portland, Oregon",2018,27
+"Portland, Oregon",2019,34
+"Portland, Oregon",2020,53
+"Portland, Oregon",2021,80
+"Portland, Oregon",2022,94
+"Portland, Oregon",2023,74
+"Portland, Oregon",2024,67

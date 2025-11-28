@@ -15,7 +15,7 @@ results were bad with flash lite on images
 there were still some errors with pro, but much fewer (this could probably fixed by sampling 5 times and doing majority vote)
 - I saved a copy of memphis homicide csv which has an error
 
-In some cities all sex crime is lumped together, in others its reported as separate types (e.g. memphis has just sexual assault, while LA has sex offenses (misdemeanor), sex offences (felonies), forcible rape). Its also not clear if some incidents are double counted, i.e. is one instance of rape counted as both forcible rape and sex offences (felony)?
+In some cities all sex crime is lumped together, in others its reported as separate types (e.g. memphis has just sexual assault, while LA has sex offenses (misdemeanor), sex offences (felonies), and forcible rape). Its also not clear if some incidents are double counted, i.e. is one instance of rape counted as both forcible rape and sex offences (felony)? For chicago there is no larceny. Should larceny be theft + robbery or just theft (the fact that other cities have larceny and robbery probably means that yes it should just be theft).
 
 First create a pipeline for each city, then combine cities that use the same file type.
 Then use AI later down the line to compare the table name
@@ -44,3 +44,41 @@ compare the accuracy of querying many categories at once from pdfs vs querying o
 CHICAGO PDFS ARE TOO BIG????
 --remove images and compress the pdf
 --also remove pages that don't contain the string of the crime category we are looking for (but doesn't work for crime categories where chicagos terminology is different)
+
+
+
+human data:
+modifications in pre-process:
+special instructions given for chicago (rape was changed to criminal sexual assault a few years in):
+You may include crimes that are synonyms i.e. homicide and murder or grand theft auto and motor vehicle theft. Larceny should be the sum of theft and robbery. Sexual assault may also be referred to as rape or criminal sexual assault. Also the model was given the crime_categories.txt and asked to use that as a guide.
+
+modifications in post-process:
+homicide:
+los angeles: criminal-homicide
+portland: homicide-offences
+memphis: murder
+
+robbery:
+worked for all cities
+
+larceny:
+chicago: I USED A COMBINATION OF THEFT AND ROBBERY BUT THIS PROBABLY WRONG (SHOULD JUST BE THEFT?)
+los angeles: larceny-theft
+portland: larceny-offenses
+
+aggravated-assault:
+portland: assault-offences
+
+sexual-assault:
+los angeles: forcible-rape and sex-offenses-felonies combined (what about sex offense misdemeanors?)
+portland: sex-offenses
+
+grand-theft-auto:
+portland: motor-vehicle-theft
+memphis: motor-vehicle-theft
+
+
+
+
+
+aggravated assault for chicago is way off for 2017

@@ -1,5 +1,8 @@
 cryptography
 openai
 pandas
+plotly
 pypdf
 python-dotenv
+streamlit
+watchdog
