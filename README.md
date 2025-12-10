@@ -46,5 +46,5 @@ python full_run.py
 ```
 
 NOTES:  
-For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated.  
+For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated. I have already uploaded the images so you may leave the links as is if you are not trying to introduce new data. 
 Los Angeles data is for Los Angeles County, all other cities data is for the city proper.
