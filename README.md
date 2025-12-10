@@ -27,7 +27,7 @@ To extract data for a given city run
 python <city-name>.py
 ```
 
-Once the data is extracted, combine it by running
+Once the data for all cities has been extracted, combine the data by running
 ```bash
 python data_combiner.py
 ```
