@@ -22,10 +22,9 @@ Processing City: Los Angeles, California
       - larceny-theft.csv
   + Mapped 1 files to 'aggravated-assault':
       - aggravated-assault.csv
-  + Mapped 3 files to 'sexual-assault':
+  + Mapped 2 files to 'sexual-assault':
       - forcible-rape.csv
       - sex-offenses-felonies.csv
-      - sex-offenses-misdemeanors.csv
   + Mapped 1 files to 'grand-theft-auto':
       - grand-theft-auto.csv
 Processing City: Chicago, Illinois

@@ -1,51 +1,51 @@
-city,year,count
-"Washington, DC",2014,14670
-"Washington, DC",2015,14117
-"Washington, DC",2016,14574
-"Washington, DC",2017,14512
-"Washington, DC",2018,14257
-"Washington, DC",2019,10738
-"Washington, DC",2020,10943
-"Washington, DC",2021,10915
-"Washington, DC",2022,23472
-"Washington, DC",2023,13349
-"Los Angeles, California",2014,31717
-"Los Angeles, California",2015,33511
-"Los Angeles, California",2016,35753
-"Los Angeles, California",2017,34340
-"Los Angeles, California",2018,32454
-"Los Angeles, California",2019,31260
-"Los Angeles, California",2020,28303
-"Los Angeles, California",2021,28491
-"Los Angeles, California",2022,32542
-"Los Angeles, California",2023,32898
-"Los Angeles, California",2024,32778
-"Chicago, Illinois",2017,64018
-"Chicago, Illinois",2018,64903
-"Chicago, Illinois",2019,62083
-"Chicago, Illinois",2020,41201
-"Chicago, Illinois",2021,40583
-"Chicago, Illinois",2022,54677
-"Chicago, Illinois",2023,57226
-"Chicago, Illinois",2024,61091
-"Portland, Oregon",2015,24130
-"Portland, Oregon",2016,24625
-"Portland, Oregon",2017,25202
-"Portland, Oregon",2018,24797
-"Portland, Oregon",2019,24599
-"Portland, Oregon",2020,22959
-"Portland, Oregon",2021,24406
-"Portland, Oregon",2022,25345
-"Portland, Oregon",2023,23713
-"Portland, Oregon",2024,24886
-"Memphis, Tennessee",2014,16457
-"Memphis, Tennessee",2015,16032
-"Memphis, Tennessee",2016,15946
-"Memphis, Tennessee",2017,17901
-"Memphis, Tennessee",2018,19305
-"Memphis, Tennessee",2019,18901
-"Memphis, Tennessee",2020,17048
-"Memphis, Tennessee",2021,15886
-"Memphis, Tennessee",2022,18486
-"Memphis, Tennessee",2023,21532
-"Memphis, Tennessee",2024,18671
+city,year,count,population
+"Washington, DC",2014,14670,653986
+"Washington, DC",2015,14117,665135
+"Washington, DC",2016,14574,673428
+"Washington, DC",2017,14512,680670
+"Washington, DC",2018,14257,685476
+"Washington, DC",2019,10738,687320
+"Washington, DC",2020,10943,670917
+"Washington, DC",2021,10915,669256
+"Washington, DC",2022,23472,676725
+"Washington, DC",2023,13349,687324
+"Los Angeles, California",2014,31717,10052585
+"Los Angeles, California",2015,33511,10100900
+"Los Angeles, California",2016,35753,10123015
+"Los Angeles, California",2017,34340,10125014
+"Los Angeles, California",2018,32454,10098683
+"Los Angeles, California",2019,31260,10053252
+"Los Angeles, California",2020,28303,9996634
+"Los Angeles, California",2021,28491,9809239
+"Los Angeles, California",2022,32542,9748447
+"Los Angeles, California",2023,32898,9731837
+"Los Angeles, California",2024,32778,9757179
+"Chicago, Illinois",2017,64018,2756313
+"Chicago, Illinois",2018,64903,2753146
+"Chicago, Illinois",2019,62083,2749996
+"Chicago, Illinois",2020,41201,2745196
+"Chicago, Illinois",2021,40583,2706324
+"Chicago, Illinois",2022,54677,2684076
+"Chicago, Illinois",2023,57226,2699144
+"Chicago, Illinois",2024,61091,2721308
+"Portland, Oregon",2015,24130,629882
+"Portland, Oregon",2016,24625,640608
+"Portland, Oregon",2017,25202,645326
+"Portland, Oregon",2018,24797,647912
+"Portland, Oregon",2019,24599,650743
+"Portland, Oregon",2020,22959,653166
+"Portland, Oregon",2021,24406,642803
+"Portland, Oregon",2022,25345,636093
+"Portland, Oregon",2023,23713,634314
+"Portland, Oregon",2024,24886,635749
+"Memphis, Tennessee",2014,16457,647946
+"Memphis, Tennessee",2015,16032,645387
+"Memphis, Tennessee",2016,15946,642211
+"Memphis, Tennessee",2017,17901,638853
+"Memphis, Tennessee",2018,19305,637425
+"Memphis, Tennessee",2019,18901,634994
+"Memphis, Tennessee",2020,17048,628388
+"Memphis, Tennessee",2021,15886,622541
+"Memphis, Tennessee",2022,18486,618468
+"Memphis, Tennessee",2023,21532,614587
+"Memphis, Tennessee",2024,18671,610919

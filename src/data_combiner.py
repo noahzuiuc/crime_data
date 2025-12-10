@@ -148,8 +148,12 @@ def combine_crime_data():
                     
                     # Ensure year is treated consistently
                     if 'year' in combined_city_df.columns and 'count' in combined_city_df.columns:
-                        # SUM the counts by year
-                        summed_df = combined_city_df.groupby('year')['count'].sum().reset_index()
+                        # SUM the counts by year, keep population (same for all rows of a year)
+                        agg_dict = {'count': 'sum'}
+                        if 'population' in combined_city_df.columns:
+                            agg_dict['population'] = 'first'
+                        
+                        summed_df = combined_city_df.groupby('year').agg(agg_dict).reset_index()
                         
                         # Add metadata
                         summed_df['city'] = city_name
@@ -177,7 +181,7 @@ def combine_crime_data():
         final_df = pd.concat(dataframe_list, ignore_index=True)
         
         # Organize columns
-        cols = ['city', 'year', 'count']
+        cols = ['city', 'year', 'count', 'population']
         existing_cols = [c for c in cols if c in final_df.columns]
         final_df = final_df[existing_cols]
 

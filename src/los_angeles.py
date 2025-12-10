@@ -2,6 +2,53 @@ import os
 import pandas as pd
 from pathlib import Path
 
+def load_la_population_data():
+    """
+    Load Los Angeles County population data from Excel files.
+    
+    Returns:
+        dict: Dictionary with year (int) as key and population (int) as value
+    """
+    script_dir = Path(__file__).parent
+    la_folder = script_dir.parent / "Los Angeles, California"
+    
+    population = {}
+    
+    # Load 2010-2020 data
+    file_2010_2020 = la_folder / "california_county_population_2010_2020.xlsx"
+    if file_2010_2020.exists():
+        df = pd.read_excel(file_2010_2020, header=None)
+        # Find Los Angeles row
+        for i, row in df.iterrows():
+            if 'Los Angeles' in str(row[0]):
+                # Columns: 0=County, 1=April 2010, 2=Estimates Base, 
+                # 3-12 = 2010-2019 estimates, 13=April 2020 Census
+                # Based on row 3, col 2=2010, col 3=2011, ... col 11=2019
+                for year_offset, col_idx in enumerate(range(2, 12)):  # cols 2-11 for 2010-2019
+                    year = 2010 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    # Load 2020-2024 data  
+    file_2020_2024 = la_folder / "california_county_population_2020_2024.xlsx"
+    if file_2020_2024.exists():
+        df = pd.read_excel(file_2020_2024, header=None)
+        # Find Los Angeles row
+        for i, row in df.iterrows():
+            if 'Los Angeles' in str(row[0]):
+                # Columns: 0=County, 1=April 2020 Base, 2=2020, 3=2021, 4=2022, 5=2023, 6=2024
+                for year_offset, col_idx in enumerate(range(2, 7)):  # cols 2-6 for 2020-2024
+                    year = 2020 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    return population
+
+
 def load_la_crime_data():
     """
     Load all Los Angeles crime CSV files from the input folder into a dictionary.
@@ -40,12 +87,13 @@ def load_la_crime_data():
     return crime_data
 
 
-def create_category_csvs(crime_data):
+def create_category_csvs(crime_data, population_data=None):
     """
-    Create CSV files for each crime category with year and count columns.
+    Create CSV files for each crime category with year, count, and population columns.
     
     Args:
         crime_data: Dictionary with year as key and DataFrame as value
+        population_data: Dictionary with year (int) as key and population (int) as value
     """
     if not crime_data:
         print("No data available to process.")
@@ -92,6 +140,10 @@ def create_category_csvs(crime_data):
         # --- CRITICAL STEP: Rename 'YEAR' to lowercase 'year' ---
         yearly_counts = yearly_counts.rename(columns={'YEAR': 'year'})
         
+        # Add population column if population data is available
+        if population_data:
+            yearly_counts['population'] = yearly_counts['year'].map(population_data)
+        
         # Create filename (sanitize category name for filesystem)
         safe_filename = category.lower().replace(' ', '-').replace('/', '-').replace('&', 'and')
         safe_filename = ''.join(c for c in safe_filename if c.isalnum() or c in ['-', '_'])
@@ -109,10 +161,14 @@ if __name__ == "__main__":
     # Load the data
     data = load_la_crime_data()
     
+    # Load population data
+    population = load_la_population_data()
+    print(f"Loaded population data for years: {sorted(population.keys())}")
+    
     # Print summary
     print(f"\nTotal years loaded: {len(data)}")
     if data:
         print(f"Years: {list(data.keys())}")
         
         # Create CSV files for each category
-        create_category_csvs(data)
+        create_category_csvs(data, population)

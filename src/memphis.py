@@ -4,6 +4,7 @@ from openai import OpenAI
 import re
 import csv
 from pathlib import Path
+import pandas as pd
 
 load_dotenv()
 
@@ -25,6 +26,52 @@ photo_links = ["https://i.ibb.co/9Ht6dPkW/robbery.webp",
                "https://i.ibb.co/XkxDPSj8/motor-vehicle-theft.webp",
                "https://i.ibb.co/bMSLDpkq/murder.webp",
                "https://i.ibb.co/JFgZf7w7/larceny.webp"]
+
+
+def load_memphis_population_data():
+    """
+    Load Memphis city population data from Excel files.
+    
+    Returns:
+        dict: Dictionary with year (int) as key and population (int) as value
+    """
+    script_dir = Path(__file__).parent
+    memphis_folder = script_dir.parent / "Memphis, Tennessee"
+    
+    population = {}
+    
+    # Load 2010-2020 data
+    file_2010_2020 = memphis_folder / "tennessee_city_population_2010_2020.xlsx"
+    if file_2010_2020.exists():
+        df = pd.read_excel(file_2010_2020, header=None)
+        # Find Memphis row
+        for i, row in df.iterrows():
+            if 'Memphis city' in str(row[0]):
+                # Columns: 0=City, 1=April 2010 Base, 2=2010, 3=2011, ... 11=2019, 12=April 2020 Census
+                for year_offset, col_idx in enumerate(range(2, 12)):  # cols 2-11 for 2010-2019
+                    year = 2010 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    # Load 2020-2024 data  
+    file_2020_2024 = memphis_folder / "tennessee_city_population_2020_2024.xlsx"
+    if file_2020_2024.exists():
+        df = pd.read_excel(file_2020_2024, header=None)
+        # Find Memphis row
+        for i, row in df.iterrows():
+            if 'Memphis city' in str(row[0]):
+                # Columns: 0=City, 1=April 2020 Base, 2=2020, 3=2021, 4=2022, 5=2023, 6=2024
+                for year_offset, col_idx in enumerate(range(2, 7)):  # cols 2-6 for 2020-2024
+                    year = 2020 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    return population
+
 
 def _sanitize_response_text(text: str) -> str:
     """Remove markdown/code fences and normalize separators to commas."""
@@ -48,7 +95,7 @@ def _extract_filename_from_url(url: str) -> str:
     return f"{stem}.csv"
 
 
-def _write_csv_from_text(csv_path: Path, text: str) -> None:
+def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None) -> None:
     """Attempt to parse lines of 'year,value' from text and write to csv_path.
 
     If text already contains commas, use them. Otherwise try to split on whitespace.
@@ -105,53 +152,97 @@ def _write_csv_from_text(csv_path: Path, text: str) -> None:
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
         if lines:
-            writer.writerow(["year", "count"])
-            for y, v in lines:
-                writer.writerow([y, v])
+            if population_data:
+                writer.writerow(["year", "count", "population"])
+                for y, v in lines:
+                    pop = population_data.get(int(y), "")
+                    writer.writerow([y, v, pop])
+            else:
+                writer.writerow(["year", "count"])
+                for y, v in lines:
+                    writer.writerow([y, v])
         else:
             writer.writerow(["response"])
             writer.writerow([text])
 
 
-for photo_link in photo_links:
-    completion = client.chat.completions.create(
-        model="google/gemini-3-pro-preview",
-        messages=[
-            {
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": "Use the image provided to create a csv file. Grab data from 2014 to 2024. The first column of the csv should be the year and the second column should be how many times a given crime was commited in that year."},
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": photo_link
-                        },
-                    },
-                ],
-            }
-        ],
-    )
-
-    raw_content = completion.choices[0].message.content
-    if isinstance(raw_content, list) or isinstance(raw_content, dict):
+def update_existing_csvs_with_population():
+    """
+    Update existing Memphis output CSVs to add population column.
+    Useful when CSVs were already generated without population data.
+    """
+    population = load_memphis_population_data()
+    output_folder = Path(__file__).parent.parent / "Memphis, Tennessee" / "output"
+    
+    if not output_folder.exists():
+        print(f"Output folder not found: {output_folder}")
+        return
+    
+    for csv_file in output_folder.glob("*.csv"):
         try:
-            if isinstance(raw_content, list):
-                parts = []
-                for item in raw_content:
-                    if isinstance(item, dict) and "text" in item:
-                        parts.append(item.get("text", ""))
-                    elif isinstance(item, str):
-                        parts.append(item)
-                model_text = "\n".join(parts)
-            else:
-                model_text = str(raw_content)
-        except Exception:
-            model_text = str(raw_content)
-    else:
-        model_text = str(raw_content)
+            df = pd.read_csv(csv_file)
+            if 'year' in df.columns and 'population' not in df.columns:
+                df['population'] = df['year'].map(population)
+                df.to_csv(csv_file, index=False)
+                print(f"Updated: {csv_file.name}")
+            elif 'population' in df.columns:
+                print(f"Skipped (already has population): {csv_file.name}")
+        except Exception as e:
+            print(f"Error updating {csv_file.name}: {e}")
 
-    clean = _sanitize_response_text(model_text)
-    filename = _extract_filename_from_url(photo_link)
-    out_path = Path(__file__).resolve().parent.parent / "Memphis, Tennessee" / "output" / filename
-    _write_csv_from_text(out_path, clean)
-    print(f"Wrote: {out_path}")
+
+if __name__ == "__main__":
+    import sys
+    
+    # If --update-population flag is passed, just update existing CSVs
+    if len(sys.argv) > 1 and sys.argv[1] == "--update-population":
+        print("Updating existing CSVs with population data...")
+        update_existing_csvs_with_population()
+        sys.exit(0)
+    
+    # Load population data once at module level
+    population_data = load_memphis_population_data()
+    print(f"Loaded Memphis population data for years: {sorted(population_data.keys())}")
+
+    for photo_link in photo_links:
+        completion = client.chat.completions.create(
+            model="google/gemini-3-pro-preview",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Use the image provided to create a csv file. Grab data from 2014 to 2024. The first column of the csv should be the year and the second column should be how many times a given crime was commited in that year."},
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": photo_link
+                            },
+                        },
+                    ],
+                }
+            ],
+        )
+
+        raw_content = completion.choices[0].message.content
+        if isinstance(raw_content, list) or isinstance(raw_content, dict):
+            try:
+                if isinstance(raw_content, list):
+                    parts = []
+                    for item in raw_content:
+                        if isinstance(item, dict) and "text" in item:
+                            parts.append(item.get("text", ""))
+                        elif isinstance(item, str):
+                            parts.append(item)
+                    model_text = "\n".join(parts)
+                else:
+                    model_text = str(raw_content)
+            except Exception:
+                model_text = str(raw_content)
+        else:
+            model_text = str(raw_content)
+
+        clean = _sanitize_response_text(model_text)
+        filename = _extract_filename_from_url(photo_link)
+        out_path = Path(__file__).resolve().parent.parent / "Memphis, Tennessee" / "output" / filename
+        _write_csv_from_text(out_path, clean, population_data)
+        print(f"Wrote: {out_path}")

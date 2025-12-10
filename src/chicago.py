@@ -6,6 +6,7 @@ import base64
 from pathlib import Path
 from pypdf import PdfReader, PdfWriter
 import io
+import pandas as pd
 
 load_dotenv()
 
@@ -19,6 +20,51 @@ client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
     api_key=api_key,
 )
+
+
+def load_chicago_population_data():
+    """
+    Load Chicago city population data from Excel files.
+    
+    Returns:
+        dict: Dictionary with year (int) as key and population (int) as value
+    """
+    script_dir = Path(__file__).parent
+    chicago_folder = script_dir.parent / "Chicago, Illinois"
+    
+    population = {}
+    
+    # Load 2010-2020 data
+    file_2010_2020 = chicago_folder / "illinois_city_population_2010_2020.xlsx"
+    if file_2010_2020.exists():
+        df = pd.read_excel(file_2010_2020, header=None)
+        # Find Chicago row (exact match to avoid North Chicago, West Chicago)
+        for i, row in df.iterrows():
+            if row[0] == 'Chicago city, Illinois':
+                # Columns: 0=City, 1=April 2010 Base, 2=2010, 3=2011, ... 11=2019, 12=April 2020 Census
+                for year_offset, col_idx in enumerate(range(2, 12)):  # cols 2-11 for 2010-2019
+                    year = 2010 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    # Load 2020-2024 data  
+    file_2020_2024 = chicago_folder / "illinois_city_population_2020_2024.xlsx"
+    if file_2020_2024.exists():
+        df = pd.read_excel(file_2020_2024, header=None)
+        # Find Chicago row (exact match)
+        for i, row in df.iterrows():
+            if row[0] == 'Chicago city, Illinois':
+                # Columns: 0=City, 1=April 2020 Base, 2=2020, 3=2021, 4=2022, 5=2023, 6=2024
+                for year_offset, col_idx in enumerate(range(2, 7)):  # cols 2-6 for 2020-2024
+                    year = 2020 + year_offset
+                    pop = row[col_idx]
+                    if pd.notna(pop):
+                        population[year] = int(pop)
+                break
+    
+    return population
 
 
 def load_crime_categories() -> list:
@@ -148,21 +194,64 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
     return str(response).strip().replace(',', '')
 
 
-def write_category_csv(category: str, data: list, output_folder: Path):
+def write_category_csv(category: str, data: list, output_folder: Path, population_data: dict = None):
     """Write crime data for a category to CSV file."""
     output_folder.mkdir(parents=True, exist_ok=True)
     csv_path = output_folder / f"{category}.csv"
     
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["year", "count"])
-        for year, count in sorted(data):
-            writer.writerow([year, count])
+        if population_data:
+            writer.writerow(["year", "count", "population"])
+            for year, count in sorted(data):
+                pop = population_data.get(int(year), "")
+                writer.writerow([year, count, pop])
+        else:
+            writer.writerow(["year", "count"])
+            for year, count in sorted(data):
+                writer.writerow([year, count])
     
     print(f"  Wrote: {csv_path.name}")
 
 
+def update_existing_csvs_with_population():
+    """
+    Update existing Chicago output CSVs to add population column.
+    Useful when CSVs were already generated without population data.
+    """
+    population = load_chicago_population_data()
+    output_folder = Path(__file__).parent.parent / "Chicago, Illinois" / "output"
+    
+    if not output_folder.exists():
+        print(f"Output folder not found: {output_folder}")
+        return
+    
+    for csv_file in output_folder.glob("*.csv"):
+        try:
+            df = pd.read_csv(csv_file)
+            if 'year' in df.columns and 'population' not in df.columns:
+                df['population'] = df['year'].map(population)
+                df.to_csv(csv_file, index=False)
+                print(f"Updated: {csv_file.name}")
+            elif 'population' in df.columns:
+                print(f"Skipped (already has population): {csv_file.name}")
+        except Exception as e:
+            print(f"Error updating {csv_file.name}: {e}")
+
+
 if __name__ == "__main__":
+    import sys
+    
+    # If --update-population flag is passed, just update existing CSVs
+    if len(sys.argv) > 1 and sys.argv[1] == "--update-population":
+        print("Updating existing CSVs with population data...")
+        update_existing_csvs_with_population()
+        sys.exit(0)
+    
+    # Load population data
+    population_data = load_chicago_population_data()
+    print(f"Loaded Chicago population data for years: {sorted(population_data.keys())}")
+    
     # Get paths
     script_dir = Path(__file__).parent
     input_folder = script_dir.parent / "Chicago, Illinois" / "input"
@@ -210,6 +299,6 @@ if __name__ == "__main__":
         # Write CSV files for each category after processing this year
         print(f"\n  Writing CSV files for {year}...")
         for category in CRIME_CATEGORIES:
-            write_category_csv(category, category_data[category], output_folder)
+            write_category_csv(category, category_data[category], output_folder, population_data)
     
     print(f"\nDone! All files saved to: {output_folder}")

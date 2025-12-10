@@ -1,5 +1,6 @@
 cryptography
 openai
+openpyxl
 pandas
 plotly
 pypdf
