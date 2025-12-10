@@ -15,8 +15,8 @@ st.set_page_config(
 @st.cache_data
 def load_data():
     # Adjust this path if your folder structure is different
-    # Assuming script is in 'src' and data is in sibling folder 'Combined Data Human'
-    folder_path = os.path.join(os.path.dirname(__file__), '..', 'Combined Data Human')
+    # Assuming script is in 'src' and data is in sibling folder 'Combined Data'
+    folder_path = os.path.join(os.path.dirname(__file__), '..', 'Combined Data')
     
     # List of specific files based on your screenshot
     files = [
@@ -65,7 +65,7 @@ st.markdown("Visualize trends across different cities and crime categories over 
 st.markdown("---")
 
 if df.empty:
-    st.warning("No data loaded. Please ensure your CSV files are in the 'Combined Data Human' folder next to the 'src' folder.")
+    st.warning("No data loaded. Please ensure your CSV files are in the 'Combined Data' folder next to the 'src' folder.")
     st.stop()
 
 # --- SIDEBAR FILTERS ---
@@ -76,7 +76,7 @@ all_cities = sorted(df['city'].unique())
 selected_cities = st.sidebar.multiselect(
     "Select Cities",
     all_cities,
-    default=all_cities[:2] if len(all_cities) > 1 else all_cities # Default to first two
+    default=all_cities
 )
 
 # 2. Crime Type Filter
@@ -107,7 +107,7 @@ filtered_df = df[
 # Calculate metrics based on the filtered data
 total_incidents = filtered_df['count'].sum()
 avg_incidents = filtered_df['count'].mean()
-if len(selected_cities) > 0:
+if len(selected_cities) > 0 and not filtered_df.empty:
     top_city = filtered_df.groupby('city')['count'].sum().idxmax()
 else:
     top_city = "N/A"
@@ -129,18 +129,20 @@ with tab1:
     # Aggregating data for the line chart
     line_df = filtered_df.groupby(['city', 'year'])['count'].sum().reset_index()
     
-    fig_line = px.line(
-        line_df, 
-        x='year', 
-        y='count', 
-        color='city', 
-        markers=True,
-        title=f"Total Incidents over Time by City ({selected_years[0]}-{selected_years[1]})",
-        labels={'count': 'Number of Incidents', 'year': 'Year', 'city': 'City'}
-    )
-    fig_line.update_layout(hovermode="x unified")
-    # FIX: Replaced use_container_width=True with width="stretch"
-    st.plotly_chart(fig_line, width="stretch")
+    if not line_df.empty:
+        fig_line = px.line(
+            line_df, 
+            x='year', 
+            y='count', 
+            color='city', 
+            markers=True,
+            title=f"Total Incidents over Time by City ({selected_years[0]}-{selected_years[1]})",
+            labels={'count': 'Number of Incidents', 'year': 'Year', 'city': 'City'}
+        )
+        fig_line.update_layout(hovermode="x unified")
+        st.plotly_chart(fig_line, width="stretch")
+    else:
+        st.info("No data available for the current selection.")
 
 with tab2:
     st.subheader("Crime Composition by City")
@@ -148,36 +150,60 @@ with tab2:
     # Bar chart showing the breakdown of crime types per city
     bar_df = filtered_df.groupby(['city', 'Crime Type'])['count'].sum().reset_index()
     
-    fig_bar = px.bar(
-        bar_df, 
-        x='city', 
-        y='count', 
-        color='Crime Type', 
-        title="Total Incidents by Type and City",
-        labels={'count': 'Total Incidents', 'city': 'City'},
-        barmode='stack'
-    )
-    # FIX: Replaced use_container_width=True with width="stretch"
-    st.plotly_chart(fig_bar, width="stretch")
+    if not bar_df.empty:
+        fig_bar = px.bar(
+            bar_df, 
+            x='city', 
+            y='count', 
+            color='Crime Type', 
+            title="Total Incidents by Type and City",
+            labels={'count': 'Total Incidents', 'city': 'City'},
+            barmode='stack'
+        )
+        st.plotly_chart(fig_bar, width="stretch")
+    else:
+        st.info("No data available for the current selection.")
 
 with tab3:
     st.subheader("Yearly Intensity Heatmap")
     
-    # Heatmap: Y-Axis = City, X-Axis = Year, Color = Count
-    heatmap_df = filtered_df.groupby(['city', 'year'])['count'].sum().reset_index()
-    
-    fig_heat = px.density_heatmap(
-        heatmap_df, 
-        x='year', 
-        y='city', 
-        z='count', 
-        color_continuous_scale='Viridis',
-        title="Heatmap of Crime Intensity"
-    )
-    # FIX: Replaced use_container_width=True with width="stretch"
-    st.plotly_chart(fig_heat, width="stretch")
+    if not filtered_df.empty:
+        # 1. Aggregate data
+        heatmap_data = filtered_df.groupby(['city', 'year'])['count'].sum().reset_index()
+        
+        # 2. Pivot to create a matrix (Rows=City, Cols=Year)
+        # This automatically puts NaN where there is no data for a specific combination
+        heatmap_matrix = heatmap_data.pivot(index='city', columns='year', values='count')
+        
+        # 3. Ensure ALL selected years are columns (even if empty)
+        full_year_range = list(range(selected_years[0], selected_years[1] + 1))
+        
+        # Reindex to ensure the grid is complete based on user selection
+        heatmap_matrix = heatmap_matrix.reindex(index=selected_cities, columns=full_year_range)
+        
+        # 4. Create Heatmap using imshow
+        fig_heat = px.imshow(
+            heatmap_matrix,
+            labels=dict(x="Year", y="City", color="Incidents"),
+            x=heatmap_matrix.columns,
+            y=heatmap_matrix.index,
+            color_continuous_scale='RdYlGn_r', # Green (Low) -> Red (High)
+            text_auto=True, 
+            aspect="auto"
+        )
+
+        # 5. Styling: Set plot background to black so NaNs appear black
+        fig_heat.update_layout(
+            plot_bgcolor='black', 
+            xaxis=dict(dtick=1, side='bottom'),
+            title="Heatmap of Crime Intensity"
+        )
+        
+        st.plotly_chart(fig_heat, width="stretch")
+    else:
+        st.info("No data available for the current selection.")
 
 # --- RAW DATA VIEW ---
 with st.expander("📂 View Raw Data"):
-    # FIX: Replaced use_container_width=True with width="stretch"
-    st.dataframe(filtered_df.sort_values(by=['city', 'year', 'Crime Type']), width="stretch")
+    if not filtered_df.empty:
+        st.dataframe(filtered_df.sort_values(by=['city', 'year', 'Crime Type']), width="stretch")

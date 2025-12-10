@@ -20,3 +20,21 @@ pip install -r requirements.txt
 ```
 
 Rename .env.example to .env and supply an openrouter API key
+
+In the src directory:
+To extract data for a given city run
+```bash
+python <city-name>.py
+```
+
+Once the data is extracted, combine it by running
+```bash
+python data_combiner.py
+```
+
+To run the dashboard use:
+```bash
+streamlit run dashboard.py
+```
+
+NOTE: For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated.

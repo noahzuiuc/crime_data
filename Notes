@@ -47,7 +47,7 @@ CHICAGO PDFS ARE TOO BIG????
 
 THE SOLUTION WAS TO ONLY INCLUDE PAGES WITH THE STRING "INDEX CRIME OVERVIEW"
 
-
+Missing per capita data
 
 human data:
 modifications in pre-process:
@@ -65,7 +65,7 @@ larceny:
 chicago: theft (2017-2020, 2022-2024), larceny-theft (2021)
 
 sexual-assault:
-chicago: rape (2017-2019), criminal-sexual-assault-rape (2020), criminal-sexual-assault (2020-2024)
+chicago: rape (2017-2019), criminal-sexual-assault-rape (2020), criminal-sexual-assault (2021-2024)
 
 grand-theft-auto:
 chicago: motor-vehicle-theft

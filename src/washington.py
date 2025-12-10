@@ -51,7 +51,7 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
     data_url = f"data:application/pdf;base64,{pdf_base64}"
     
     completion = client.chat.completions.create(
-        model="google/gemini-2.5-flash-lite",
+        model="google/gemini-3-pro-exp",
         messages=[
             {
                 "role": "user",

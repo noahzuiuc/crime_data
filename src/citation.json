@@ -1,0 +1,32 @@
+{
+  "@context": "https://schema.org/",
+  "@type": "Dataset",
+  "name": "Crime Incidents by City and Year (2014-2024)",
+  "description": "Time-series data detailing the annual count of various crime categories",
+  "creator": {
+    "@type": "Person",
+    "givenName": "Noah Zheutlin"
+  },
+  "keywords": [
+    "Criminology",
+    "Time-Series"
+  ],
+  "temporalCoverage": "2014-01-01/2024-01-01",
+  "spatialCoverage": {
+    "@type": "Place",
+    "description": "Chicago, Los Angeles, Memphis, Portland, Washington D.C."
+  },
+  "datePublished": "2025-12-09",
+  "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "text/csv",
+    "contentUrl": "https://github.com/noahzuiuc/crime_data/tree/main/Combined%20Data"
+  },
+  "dataSources": [
+    "https://public.tableau.com/app/profile/portlandpolicebureau/viz/MonthlyReportedCrimeStatistics/MonthlyStatistics",
+    "https://www.memphispolice.org/news/memphis-crime-drops-to-historic-25-year-low-across-major-categories/",
+    "https://mpdc.dc.gov/page/mpd-annual-reports",
+    "https://lasd.org/transparency/part1and2crimedata/#part2",
+    "https://www.chicagopolice.org/statistics-data/statistical-reports/annual-reports/"
+  ]
+}
