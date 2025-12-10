@@ -29,7 +29,7 @@ python full_run.py
 
 OR
 
-You may choose to execute then steps individually
+You may choose to execute the steps individually (again in the src directory):
 
 To extract data for a given city run
 ```bash
