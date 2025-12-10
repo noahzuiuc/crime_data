@@ -37,4 +37,14 @@ To run the dashboard use:
 streamlit run dashboard.py
 ```
 
-NOTE: For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated.
+OR
+
+In the src directory:
+Do all of the above in one step:
+```bash
+python full_run.py
+```
+
+NOTES:  
+For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated.  
+Los Angeles data is for Los Angeles County, all other cities data is for the city proper.
