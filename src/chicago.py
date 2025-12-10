@@ -23,6 +23,7 @@ client = OpenAI(
 
 
 def load_chicago_population_data():
+    # Gather Chicago population figures from the supporting spreadsheets
     script_dir = Path(__file__).parent
     chicago_folder = script_dir.parent / "Chicago, Illinois"
     
@@ -56,6 +57,7 @@ def load_chicago_population_data():
 
 
 def load_crime_categories() -> list:
+    # Read the crime category list from crime_categories.txt
     script_dir = Path(__file__).parent
     categories_file = script_dir / "crime_categories.txt"
     
@@ -69,6 +71,7 @@ CRIME_CATEGORIES = load_crime_categories()
 
 
 def find_page_with_text(pdf_path: Path, search_text: str) -> list[int]:
+    # Locate PDF pages containing the provided search text
     reader = PdfReader(pdf_path)
     pages = []
     for i, page in enumerate(reader.pages):
@@ -81,6 +84,7 @@ def find_page_with_text(pdf_path: Path, search_text: str) -> list[int]:
 
 
 def remove_images_from_pdf(pdf_path: Path, page_num: int) -> bytes:
+    # Strip images from a PDF page so the parser only sees text
     reader = PdfReader(pdf_path)
     writer = PdfWriter()
     
@@ -106,6 +110,7 @@ def remove_images_from_pdf(pdf_path: Path, page_num: int) -> bytes:
 
 
 def combine_pages_to_pdf(pdf_path: Path, page_nums: list[int]) -> bytes:
+    # Merge selected PDF pages into a single in-memory document
     reader = PdfReader(pdf_path)
     writer = PdfWriter()
     
@@ -120,14 +125,17 @@ def combine_pages_to_pdf(pdf_path: Path, page_nums: list[int]) -> bytes:
 
 
 def encode_pdf_to_base64(pdf_bytes: bytes) -> str:
+    # Convert PDF bytes into a base64 string accepted by the API
     return base64.b64encode(pdf_bytes).decode('utf-8')
 
 
 def extract_year_from_filename(filename: str) -> str:
+    # Pull the year token from a report filename
     return Path(filename).stem.split("-")[0]
 
 
 def query_openai_for_category(pdf_base64: str, category: str, year: str, filename: str) -> str:
+    # Ask the language model for the crime count within the supplied PDF slice
     
     data_url = f"data:application/pdf;base64,{pdf_base64}"
     
@@ -172,6 +180,7 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
 
 
 def write_category_csv(category: str, data: list, output_folder: Path, population_data: dict = None):
+    # Persist the aggregated crime counts (and population if present) to CSV
     output_folder.mkdir(parents=True, exist_ok=True)
     csv_path = output_folder / f"{category}.csv"
     
@@ -191,6 +200,7 @@ def write_category_csv(category: str, data: list, output_folder: Path, populatio
 
 
 def update_existing_csvs_with_population():
+    # Backfill population data into CSVs that are missing the column
     population = load_chicago_population_data()
     output_folder = Path(__file__).parent.parent / "Chicago, Illinois" / "output"
     

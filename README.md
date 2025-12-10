@@ -1,5 +1,8 @@
 This project was built and tested with python 3.12.7, compatibility with other versions may vary.  
-This project was built and tested using Windows 11, compatibility with other operating systems may vary.
+This project was built and tested using Windows 11 and MacOS 26.1, compatibility with other operating systems may vary.
+
+Each city folder contains an input folder for the data sources. Once a city's script has been run it will populate the output folder (however it is pre-populated with current data for convenience).
+
 
 Create a virtual environment for the project (in the root directory)
 ```bash
@@ -17,12 +20,17 @@ source crime_data_env/bin/activate
 Rename .env.example to .env and supply an openrouter API key
 
 In the src directory:  
-Run
+Install the requirements
 ```bash
 pip install -r requirements.txt
 ```
 
-Then
+Show the dashboard with the already processed data
+```bash
+streamlit run dashboard.py
+```
+
+Run the data processing and then show the dashboard (costs money in OpenRouter inference credits)
 ```bash
 python full_run.py
 ```

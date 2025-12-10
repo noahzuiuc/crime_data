@@ -3,6 +3,7 @@ import pandas as pd
 from pathlib import Path
 
 def load_la_population_data():
+    # Collect Los Angeles population figures from the county spreadsheets
     script_dir = Path(__file__).parent
     la_folder = script_dir.parent / "Los Angeles, California"
     
@@ -36,6 +37,7 @@ def load_la_population_data():
 
 
 def load_la_crime_data():
+    # Load the LA crime CSVs and return a year-keyed dataframe mapping
     script_dir = Path(__file__).parent
     input_folder = script_dir.parent / "Los Angeles, California" / "input"
     
@@ -61,6 +63,7 @@ def load_la_crime_data():
 
 
 def create_category_csvs(crime_data, population_data=None):
+    # Aggregate crime counts by category/year and emit CSVs, optionally adding population
     if not crime_data:
         print("No data available to process.")
         return

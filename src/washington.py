@@ -21,6 +21,7 @@ client = OpenAI(
 
 
 def load_dc_population_data():
+    # Collect Washington DC population figures from the census spreadsheets
     script_dir = Path(__file__).parent
     dc_folder = script_dir.parent / "Washington, DC"
     
@@ -50,6 +51,7 @@ def load_dc_population_data():
 
 
 def load_crime_categories() -> list:
+    # Read the crime category list from the shared configuration file
     script_dir = Path(__file__).parent
     categories_file = script_dir / "crime_categories.txt"
     
@@ -63,15 +65,18 @@ CRIME_CATEGORIES = load_crime_categories()
 
 
 def encode_pdf_to_base64(pdf_path: Path) -> str:
+    # Convert a PDF file on disk into a base64 string for the API
     with open(pdf_path, "rb") as pdf_file:
         return base64.b64encode(pdf_file.read()).decode('utf-8')
 
 
 def extract_year_from_filename(filename: str) -> str:
+    # Derive the year token directly from the PDF filename stem
     return Path(filename).stem
 
 
 def query_openai_for_category(pdf_base64: str, category: str, year: str, filename: str) -> str:
+    # Ask the LLM for the crime count in a given category/year using the provided PDF
     data_url = f"data:application/pdf;base64,{pdf_base64}"
     
     completion = client.chat.completions.create(
@@ -111,6 +116,7 @@ def query_openai_for_category(pdf_base64: str, category: str, year: str, filenam
 
 
 def write_category_csv(category: str, data: list, output_folder: Path, population_data: dict = None):
+    # Persist the category/year counts (and population if available) to CSV
     output_folder.mkdir(parents=True, exist_ok=True)
     csv_path = output_folder / f"{category}.csv"
     
@@ -130,6 +136,7 @@ def write_category_csv(category: str, data: list, output_folder: Path, populatio
 
 
 def update_existing_csvs_with_population():
+    # Backfill population data into existing DC CSV exports when missing
     population = load_dc_population_data()
     output_folder = Path(__file__).parent.parent / "Washington, DC" / "output"
     

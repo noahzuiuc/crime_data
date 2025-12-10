@@ -19,6 +19,7 @@ client = OpenAI(
 )
 
 def load_targets():
+    # Read the desired crime categories from crime_categories.txt
     txt_path = Path(__file__).parent / "crime_categories.txt"
     if not txt_path.exists():
         print(f"Error: {txt_path} not found.")
@@ -27,6 +28,7 @@ def load_targets():
         return [line.strip() for line in f if line.strip()]
 
 def get_city_mapping(city_name, filenames, targets):
+    # Ask the LLM to map city CSV filenames onto the canonical target categories
     prompt = f"""
     You are a data processing assistant.
     
@@ -80,6 +82,7 @@ def get_city_mapping(city_name, filenames, targets):
         return {}
 
 def combine_crime_data():
+    # Aggregate mapped city crime data into combined category CSV outputs
     targets = load_targets()
     if not targets:
         print("No target categories found in crime_categories.txt")

@@ -29,6 +29,7 @@ photo_links = ["https://i.ibb.co/9Ht6dPkW/robbery.webp",
 
 
 def load_memphis_population_data():
+    # Collect Memphis population figures from the supporting spreadsheets
     script_dir = Path(__file__).parent
     memphis_folder = script_dir.parent / "Memphis, Tennessee"
     
@@ -62,6 +63,7 @@ def load_memphis_population_data():
 
 
 def _sanitize_response_text(text: str) -> str:
+    # Normalize model responses into plain text suitable for parsing
     text = re.sub(r"```[\s\S]*?```", lambda m: m.group(0).strip('`'), text)
     text = text.strip('`\n\r ')
 
@@ -71,12 +73,14 @@ def _sanitize_response_text(text: str) -> str:
 
 
 def _extract_filename_from_url(url: str) -> str:
+    # Convert the hosted image URL into a CSV filename
     name = Path(url).name
     stem = Path(name).stem
     return f"{stem}.csv"
 
 
 def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None) -> None:
+    # Parse AI text into year/count rows and persist them to CSV
     lines = []
 
     for raw in text.splitlines():
@@ -133,6 +137,7 @@ def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None
 
 
 def update_existing_csvs_with_population():
+    # Backfill population data into Memphis CSV outputs when missing
     population = load_memphis_population_data()
     output_folder = Path(__file__).parent.parent / "Memphis, Tennessee" / "output"
     

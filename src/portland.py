@@ -4,6 +4,7 @@ from pathlib import Path
 
 
 def load_portland_population_data():
+    # Collect Portland population figures from the census spreadsheets
     script_dir = Path(__file__).parent
     portland_folder = script_dir.parent / "Portland, Oregon"
     
@@ -37,6 +38,7 @@ def load_portland_population_data():
 
 
 def load_portland_crime_data():
+    # Load the annual Portland crime CSVs and return a year-indexed mapping
     script_dir = Path(__file__).parent
     input_folder = script_dir.parent / "Portland, Oregon" / "input"
     
@@ -62,6 +64,7 @@ def load_portland_crime_data():
 
 
 def create_category_csvs(crime_data, population_data=None):
+    # Assemble per-category crime trends and write them to CSV, merging population if provided
     if not crime_data:
         print("No data available to process.")
         return
