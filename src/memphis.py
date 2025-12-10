@@ -29,41 +29,29 @@ photo_links = ["https://i.ibb.co/9Ht6dPkW/robbery.webp",
 
 
 def load_memphis_population_data():
-    """
-    Load Memphis city population data from Excel files.
-    
-    Returns:
-        dict: Dictionary with year (int) as key and population (int) as value
-    """
     script_dir = Path(__file__).parent
     memphis_folder = script_dir.parent / "Memphis, Tennessee"
     
     population = {}
     
-    # Load 2010-2020 data
     file_2010_2020 = memphis_folder / "tennessee_city_population_2010_2020.xlsx"
     if file_2010_2020.exists():
         df = pd.read_excel(file_2010_2020, header=None)
-        # Find Memphis row
         for i, row in df.iterrows():
             if 'Memphis city' in str(row[0]):
-                # Columns: 0=City, 1=April 2010 Base, 2=2010, 3=2011, ... 11=2019, 12=April 2020 Census
-                for year_offset, col_idx in enumerate(range(2, 12)):  # cols 2-11 for 2010-2019
+                for year_offset, col_idx in enumerate(range(2, 12)):
                     year = 2010 + year_offset
                     pop = row[col_idx]
                     if pd.notna(pop):
                         population[year] = int(pop)
                 break
     
-    # Load 2020-2024 data  
     file_2020_2024 = memphis_folder / "tennessee_city_population_2020_2024.xlsx"
     if file_2020_2024.exists():
         df = pd.read_excel(file_2020_2024, header=None)
-        # Find Memphis row
         for i, row in df.iterrows():
             if 'Memphis city' in str(row[0]):
-                # Columns: 0=City, 1=April 2020 Base, 2=2020, 3=2021, 4=2022, 5=2023, 6=2024
-                for year_offset, col_idx in enumerate(range(2, 7)):  # cols 2-6 for 2020-2024
+                for year_offset, col_idx in enumerate(range(2, 7)):
                     year = 2020 + year_offset
                     pop = row[col_idx]
                     if pd.notna(pop):
@@ -74,63 +62,44 @@ def load_memphis_population_data():
 
 
 def _sanitize_response_text(text: str) -> str:
-    """Remove markdown/code fences and normalize separators to commas."""
-    # Remove triple backtick fences and language hints
     text = re.sub(r"```[\s\S]*?```", lambda m: m.group(0).strip('`'), text)
     text = text.strip('`\n\r ')
 
-    # Replace common separators like ' - ', ' : ', '—' and ' – ' with a comma
     text = re.sub(r"\s*[-:–—]\s*", ",", text)
 
     return text
 
 
 def _extract_filename_from_url(url: str) -> str:
-    """Return a filename (without extension) for the csv based on the image url path.
-
-    Example: https://.../robbery.webp -> robbery.csv
-    """
     name = Path(url).name
     stem = Path(name).stem
     return f"{stem}.csv"
 
 
 def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None) -> None:
-    """Attempt to parse lines of 'year,value' from text and write to csv_path.
-
-    If text already contains commas, use them. Otherwise try to split on whitespace.
-    """
     lines = []
 
-    # Split into lines and clean each
     for raw in text.splitlines():
         line = raw.strip()
         if not line:
             continue
 
-        # Skip markdown headings or bullet markers
         line = re.sub(r"^[\-\*\u2022]\s*", "", line)
 
-        # If line contains a comma, assume it's already CSV-like
         if "," in line:
             parts = [p.strip() for p in line.split(",") if p.strip()]
         else:
-            # Try splitting on whitespace (e.g., '2014 123') or on tab
             parts = [p.strip() for p in re.split(r"\s+|\t", line) if p.strip()]
 
-        # Expect at least year and value
         if len(parts) >= 2:
             year = parts[0]
             value = parts[1]
-            # Basic validation: year is 4 digits
             if re.match(r"^\d{4}$", year):
                 lines.append((year, value))
             else:
-                # Maybe the year is second (e.g., 'Robbery 2014 123') - try to find a 4-digit token
                 digits = [p for p in parts if re.match(r"^\d{4}$", p)]
                 if digits:
                     y = digits[0]
-                    # choose the token after year as value if available
                     try:
                         idx = parts.index(y)
                         val = parts[idx + 1] if idx + 1 < len(parts) else parts[0]
@@ -138,16 +107,13 @@ def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None
                         val = parts[-1]
                     lines.append((y, val))
 
-    # If nothing parsed, try to extract all 'YYYY' and numbers pairs from the whole text
     if not lines:
         tokens = re.findall(r"(\d{4})[^\d]{0,10}(\d+)", text)
         for y, v in tokens:
             lines.append((y, v))
 
-    # Post-process: filter to only keep years between 2014 and 2024
     lines = [(y, v) for y, v in lines if 2014 <= int(y) <= 2024]
 
-    # If still nothing, write the raw text into a single-cell csv
     csv_path.parent.mkdir(parents=True, exist_ok=True)
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
@@ -167,10 +133,6 @@ def _write_csv_from_text(csv_path: Path, text: str, population_data: dict = None
 
 
 def update_existing_csvs_with_population():
-    """
-    Update existing Memphis output CSVs to add population column.
-    Useful when CSVs were already generated without population data.
-    """
     population = load_memphis_population_data()
     output_folder = Path(__file__).parent.parent / "Memphis, Tennessee" / "output"
     
@@ -194,13 +156,11 @@ def update_existing_csvs_with_population():
 if __name__ == "__main__":
     import sys
     
-    # If --update-population flag is passed, just update existing CSVs
     if len(sys.argv) > 1 and sys.argv[1] == "--update-population":
         print("Updating existing CSVs with population data...")
         update_existing_csvs_with_population()
         sys.exit(0)
     
-    # Load population data once at module level
     population_data = load_memphis_population_data()
     print(f"Loaded Memphis population data for years: {sorted(population_data.keys())}")
 
