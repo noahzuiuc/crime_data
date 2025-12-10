@@ -17,6 +17,7 @@ source crime_data_env/bin/activate
 Rename .env.example to .env and supply an openrouter API key
 
 In the src directory:
+Run
 ```bash
 pip install -r requirements.txt
 ```
