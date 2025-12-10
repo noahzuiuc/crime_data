@@ -14,14 +14,22 @@ crime_data_env\Scripts\activate.bat
 source crime_data_env/bin/activate
 ```
 
-Install the requirements (in the src directory)
+Rename .env.example to .env and supply an openrouter API key
+
+In the src directory:
 ```bash
 pip install -r requirements.txt
 ```
 
-Rename .env.example to .env and supply an openrouter API key
+Then
+```bash
+python full_run.py
+```
 
-In the src directory:
+OR
+
+You may choose to execute then steps individually
+
 To extract data for a given city run
 ```bash
 python <city-name>.py
@@ -37,13 +45,10 @@ To run the dashboard use:
 streamlit run dashboard.py
 ```
 
-OR
 
 In the src directory:
 Do all of the above in one step:
-```bash
-python full_run.py
-```
+
 
 NOTES:  
 For Memphis, images must be uploaded to an image host and the array in memphis.py at line 21 must be updated. I have already uploaded the images so you may leave the links as is if you are not trying to introduce new data. 
