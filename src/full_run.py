@@ -23,7 +23,7 @@ def run_script(script_name: str, city_name: str = None) -> bool:
     script_path = Path(__file__).parent / script_name
     
     if not script_path.exists():
-        print(f"  ⚠️  Script not found: {script_name}")
+        print(f"Script not found: {script_name}")
         return False
     
     display_name = city_name if city_name else script_name
@@ -43,14 +43,14 @@ def run_script(script_name: str, city_name: str = None) -> bool:
         elapsed = time.time() - start_time
         
         if result.returncode == 0:
-            print(f"\n✅ {display_name} completed successfully ({elapsed:.1f}s)")
+            print(f"\n{display_name} completed successfully ({elapsed:.1f}s)")
             return True
         else:
-            print(f"\n❌ {display_name} failed with exit code {result.returncode} ({elapsed:.1f}s)")
+            print(f"\n{display_name} failed with exit code {result.returncode} ({elapsed:.1f}s)")
             return False
             
     except Exception as e:
-        print(f"\n❌ Error running {display_name}: {e}")
+        print(f"\nError running {display_name}: {e}")
         return False
 
 
@@ -76,7 +76,7 @@ def run_dashboard() -> None:
     script_path = Path(__file__).parent / DASHBOARD_SCRIPT
     
     if not script_path.exists():
-        print(f"  ⚠️  Dashboard script not found: {DASHBOARD_SCRIPT}")
+        print(f"Dashboard script not found: {DASHBOARD_SCRIPT}")
         return
     
     print(f"\n{'='*60}")
@@ -91,9 +91,9 @@ def run_dashboard() -> None:
             check=False
         )
     except KeyboardInterrupt:
-        print("\n\n👋 Dashboard stopped.")
+        print("\n\nDashboard stopped.")
     except Exception as e:
-        print(f"\n❌ Error running dashboard: {e}")
+        print(f"\nError running dashboard: {e}")
 
 
 def print_summary(city_results: dict, combiner_result: bool = None):
@@ -104,7 +104,7 @@ def print_summary(city_results: dict, combiner_result: bool = None):
     if city_results:
         print("\nCity Extractions:")
         for city, success in city_results.items():
-            status = "✅ Success" if success else "❌ Failed"
+            status = "Success" if success else "Failed"
             print(f"  {city}: {status}")
         
         successful = sum(1 for s in city_results.values() if s)
@@ -113,7 +113,7 @@ def print_summary(city_results: dict, combiner_result: bool = None):
     
     if combiner_result is not None:
         print("\nData Combiner:")
-        status = "✅ Success" if combiner_result else "❌ Failed"
+        status = "Success" if combiner_result else "Failed"
         print(f"  {status}")
     
     print(f"\n{'='*60}")

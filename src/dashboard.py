@@ -26,7 +26,7 @@ def load_data():
     all_data = []
     
     if not os.path.exists(folder_path):
-        st.error(f"⚠️ Data folder not found at: {folder_path}. Please check your folder structure.")
+        st.error(f"Data folder not found at: {folder_path}. Please check your folder structure.")
         return pd.DataFrame()
 
     for filename in files:

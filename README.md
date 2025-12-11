@@ -31,6 +31,7 @@ streamlit run dashboard.py
 ```
 
 Run the data processing and then show the dashboard (costs money in OpenRouter inference credits)
+*This method is for convenience, but if there is an error (which can happen randomly sometimes with OpenRouter) it has to be entirely rerun. It is recommended to run the individual steps as shown further down.
 ```bash
 python full_run.py
 ```
